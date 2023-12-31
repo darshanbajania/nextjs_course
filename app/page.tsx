@@ -15,7 +15,10 @@ const query = gql`
 
 const Home = () => {
   const { data } = useSuspenseQuery(query);
-  console.log("🚀 ~ file: page.tsx:18 ~ Home ~ data:", data);
+  console.log(
+    "🚀 ~ file: page.tsx:18 ~ Home ~ data:",
+    process.env.GOOGLE_CLIENT_SECRET
+  );
   return (
     <section className="flex-start flex-col paddings mb-16">
       <h1>Categories</h1>
