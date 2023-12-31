@@ -1,4 +1,21 @@
+"use client";
+
+export const dynamic = "force-dynamic";
+
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import { gql } from "@apollo/client";
+
+const query = gql`
+  query MyQuery {
+    customer {
+      username
+    }
+  }
+`;
+
 const Home = () => {
+  const { data } = useSuspenseQuery(query);
+  console.log("🚀 ~ file: page.tsx:18 ~ Home ~ data:", data);
   return (
     <section className="flex-start flex-col paddings mb-16">
       <h1>Categories</h1>

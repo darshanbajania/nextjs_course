@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.8.0-rc.2",
+    "@apollo/experimental-nextjs-app-support": "^0.5.2",
     "@headlessui/react": "^1.7.17",
     "@types/jsonwebtoken": "^9.0.5",
     "cloudinary": "^1.41.1",
