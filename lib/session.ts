@@ -34,12 +34,14 @@ export const authOptions: NextAuthOptions = {
             email: session?.user?.email,
           },
         });
+
         if (data?.users_customer?.length == 1) {
+          console.log("🚀 ~ file: session.ts:38 ~ session ~ data:", data);
           const newSession = {
             ...session,
             user: {
               ...session.user,
-              ...data?.data?.users_customer[0],
+              ...data?.users_customer[0],
             },
           };
           return newSession;
