@@ -11,9 +11,32 @@ type ProjectFromProps = {
   type: string;
   session: SessionInterface;
 };
+const isProduction = process.env.NODE_ENV === "production";
+const serverUrl = isProduction
+  ? process.env.NEXT_PUBLIC_SERVER_URL
+  : "http://localhost:3000";
 
 const ProjectForm = ({ type, session }: ProjectFromProps) => {
-  const handleFormSubmit = (e: React.FormEvent) => {};
+  const uploadImage = async (imagePath: string) => {
+    try {
+      const response = await fetch(`${serverUrl}/api/upload`, {
+        method: "POST",
+        body: JSON.stringify({ path: imagePath }),
+      });
+      return response.json();
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const imageUrl = await uploadImage(form.image);
+    console.log(
+      "🚀 ~ file: ProjectForm.tsx:35 ~ handleFormSubmit ~ imageUrl:",
+      imageUrl
+    );
+  };
   const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const file = e.target.files?.[0];
