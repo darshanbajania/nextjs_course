@@ -7,3 +7,11 @@ export const CREATE_NEW_USER = gql`
     }
   }
 `;
+
+export const CREATE_NEW_PROJECT = gql`
+  mutation CREATE_NEW_PROJECT($projectData: users_project_insert_input!) {
+    insert_users_project_one(object: $projectData) {
+      id
+    }
+  }
+`;

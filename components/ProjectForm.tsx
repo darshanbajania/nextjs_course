@@ -6,7 +6,9 @@ import FormField from "./FormField";
 import { categoryFilters } from "@/constants";
 import CustomMenu from "./CustomMenu";
 import Button from "./Button";
-
+import { useRouter } from "next/navigation";
+import { CREATE_NEW_PROJECT } from "@/lib/mutations";
+import { useMutation } from "@apollo/client";
 type ProjectFromProps = {
   type: string;
   session: SessionInterface;
@@ -17,6 +19,8 @@ const serverUrl = isProduction
   : "http://localhost:3000";
 
 const ProjectForm = ({ type, session }: ProjectFromProps) => {
+  const router = useRouter();
+  const [createNewUser] = useMutation(CREATE_NEW_PROJECT);
   const uploadImage = async (imagePath: string) => {
     try {
       const response = await fetch(`${serverUrl}/api/upload`, {
@@ -31,11 +35,41 @@ const ProjectForm = ({ type, session }: ProjectFromProps) => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const imageUrl = await uploadImage(form.image);
-    console.log(
-      "🚀 ~ file: ProjectForm.tsx:35 ~ handleFormSubmit ~ imageUrl:",
-      imageUrl
-    );
+    setIsSubmitting(true);
+    try {
+      const image = await uploadImage(form.image);
+      const projectData = {
+        ...form,
+        image: image?.url,
+        createdBy: session?.user?.id,
+      };
+
+      if (type === "create") {
+        createNewUser({
+          variables: {
+            projectData: projectData,
+          },
+          onCompleted: (data) => {
+            setIsSubmitting(false);
+          },
+          onError: (error) => {
+            console.log(
+              "🚀 ~ file: ProjectForm.tsx:55 ~ handleFormSubmit ~ error:",
+              error
+            );
+          },
+        });
+        setIsSubmitting(false);
+        router.push("/");
+      }
+      return;
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: ProjectForm.tsx:41 ~ handleFormSubmit ~ error:",
+        error
+      );
+      setIsSubmitting(false);
+    }
   };
   const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
