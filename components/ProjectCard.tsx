@@ -58,16 +58,16 @@ const ProjectCard = ({
       <div className="flexBetween w-full px-2 mt-3 font-semibold text-sm ">
         <Link href={`project/${userId}`}>
           <div className="flexCenter gap-2">
-            {customer.profilePic && (
+            {customer?.profilePic && (
               <Image
-                src={customer.profilePic}
+                src={customer?.profilePic}
                 height={24}
                 width={24}
                 className="rounded-full"
                 alt="profile"
               />
             )}
-            <p>{customer.name}</p>
+            <p>{customer?.name}</p>
           </div>
         </Link>
         <div className="flexCenter gap-3">
