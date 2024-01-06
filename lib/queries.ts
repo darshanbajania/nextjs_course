@@ -10,3 +10,20 @@ export const GET_USER = gql`
     }
   }
 `;
+export const GET_PROJECTS = gql`
+  query GET_PROJECTS($userId: uuid) {
+    users_project(where: { createdBy: { _eq: $userId } }) {
+      id
+      title
+      description
+      image
+      liveSiteUrl
+      githubUrl
+      category
+      customer {
+        name
+        profilePic
+      }
+    }
+  }
+`;
