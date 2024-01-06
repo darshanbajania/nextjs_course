@@ -12,7 +12,7 @@ import { useMutation } from "@apollo/client";
 type ProjectFromProps = {
   type: string;
   session: SessionInterface;
-  project: ProjectInterface;
+  project?: ProjectInterface;
 };
 const isProduction = process.env.NODE_ENV === "production";
 const serverUrl = isProduction

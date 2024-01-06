@@ -39,7 +39,6 @@ const AuthProviders = () => {
             key={index}
             title={"Sign in"}
             handleClick={() => signIn(provider?.id)}
-            key={index}
           />
         ))}
       </div>
