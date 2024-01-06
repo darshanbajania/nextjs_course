@@ -8,6 +8,7 @@ import { getCurrentUser } from "@/lib/session";
 import { GET_PROJECTS } from "@/lib/queries";
 import { getClient } from "@/lib/client";
 import ProjectCard from "@/components/ProjectCard";
+import Categories from "@/components/Categories";
 // const GET_POSTS = gql`
 //   query GET_POSTS($userId: uuid) {
 //     users_project(where: { createdBy: { _eq: $userId } }) {
@@ -31,13 +32,22 @@ type ProjectType = {
   };
 };
 
-const Home = async () => {
+type searchParamsProps = {
+  searchParams: {
+    category?: string;
+  };
+};
+const Home = async ({ searchParams: { category } }: searchParamsProps) => {
+  console.log("🚀 ~ file: page.tsx:41 ~ Home ~ category:", category);
   const session = await getCurrentUser();
   const client = getClient();
   const { data } = await client.query({
     query: GET_PROJECTS,
     variables: {
-      userId: session?.user?.id,
+      where: {
+        createdBy: { _eq: session?.user?.id },
+        ...(category ? { category: { _eq: category } } : {}),
+      },
     },
   });
   const projectsData = data?.users_project as ProjectType[];
@@ -54,7 +64,7 @@ const Home = async () => {
   }
   return (
     <section className="flex-start flex-col paddings mb-16">
-      <h1>Categories</h1>
+      <Categories />
       <section className="projects-grid">
         {projectsData.map((project) => {
           return <ProjectCard key={project.id} {...project} />;

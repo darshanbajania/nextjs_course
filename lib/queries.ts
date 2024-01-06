@@ -11,8 +11,8 @@ export const GET_USER = gql`
   }
 `;
 export const GET_PROJECTS = gql`
-  query GET_PROJECTS($userId: uuid) {
-    users_project(where: { createdBy: { _eq: $userId } }) {
+  query GET_PROJECTS($where: users_project_bool_exp) {
+    users_project(where: $where) {
       id
       title
       description
