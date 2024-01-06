@@ -1,6 +1,8 @@
 // "use client";
 
-// export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
+export const revalidate = 0;
 
 // import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { gql, useQuery } from "@apollo/client";
@@ -9,6 +11,7 @@ import { GET_PROJECTS } from "@/lib/queries";
 import { getClient } from "@/lib/client";
 import ProjectCard from "@/components/ProjectCard";
 import Categories from "@/components/Categories";
+import LoadMore from "@/components/LoadMore";
 // const GET_POSTS = gql`
 //   query GET_POSTS($userId: uuid) {
 //     users_project(where: { createdBy: { _eq: $userId } }) {
@@ -35,10 +38,14 @@ type ProjectType = {
 type searchParamsProps = {
   searchParams: {
     category?: string;
+    offset?: string;
   };
 };
-const Home = async ({ searchParams: { category } }: searchParamsProps) => {
+const Home = async ({
+  searchParams: { category, offset },
+}: searchParamsProps) => {
   console.log("🚀 ~ file: page.tsx:41 ~ Home ~ category:", category);
+  const PAGE_LIMIT = 8;
   const session = await getCurrentUser();
   const client = getClient();
   const { data } = await client.query({
@@ -48,6 +55,7 @@ const Home = async ({ searchParams: { category } }: searchParamsProps) => {
         createdBy: { _eq: session?.user?.id },
         ...(category ? { category: { _eq: category } } : {}),
       },
+      offset: offset ? Number(offset) : 0,
     },
   });
   const projectsData = data?.users_project as ProjectType[];
@@ -70,7 +78,10 @@ const Home = async ({ searchParams: { category } }: searchParamsProps) => {
           return <ProjectCard key={project.id} {...project} />;
         })}
       </section>
-      <h1>Load more</h1>
+      <LoadMore
+        hasPreviousPage={offset !== "0"}
+        hasNextPage={data.users_project.length == PAGE_LIMIT}
+      />
     </section>
   );
 };

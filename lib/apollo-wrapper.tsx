@@ -14,8 +14,7 @@ function makeClient() {
     // uri: "https://main--spacex-l4uc6p.apollographos.net/graphql",
     uri: "https://outgoing-lizard-27.hasura.app/v1/graphql",
     headers: {
-      "x-hasura-admin-secret":
-        "a69lw89heFHApTJKFz8SGXZAGGK68HYOr8yaCn6GH9ZcoPpVpPrSKdqqDJOxuGzU",
+      "x-hasura-admin-secret": process.env.X_HASURA_ADMIN_SECRET,
     },
   });
 
