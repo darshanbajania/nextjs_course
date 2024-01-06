@@ -23,6 +23,7 @@ const ProjectForm = ({ type, session, project }: ProjectFromProps) => {
   const router = useRouter();
   const [createNewUser] = useMutation(CREATE_NEW_PROJECT);
   const [updateProject] = useMutation(UPDATE_PROJECT);
+
   const uploadImage = async (imagePath: string) => {
     try {
       const response = await fetch(`${serverUrl}/api/upload`, {
