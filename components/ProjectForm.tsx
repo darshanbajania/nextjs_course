@@ -1,26 +1,28 @@
 "use client";
 import React, { ChangeEvent, useState } from "react";
-import { SessionInterface } from "@/common.types";
+import { ProjectInterface, SessionInterface } from "@/common.types";
 import Image from "next/image";
 import FormField from "./FormField";
 import { categoryFilters } from "@/constants";
 import CustomMenu from "./CustomMenu";
 import Button from "./Button";
 import { useRouter } from "next/navigation";
-import { CREATE_NEW_PROJECT } from "@/lib/mutations";
+import { CREATE_NEW_PROJECT, UPDATE_PROJECT } from "@/lib/mutations";
 import { useMutation } from "@apollo/client";
 type ProjectFromProps = {
   type: string;
   session: SessionInterface;
+  project: ProjectInterface;
 };
 const isProduction = process.env.NODE_ENV === "production";
 const serverUrl = isProduction
   ? process.env.NEXT_PUBLIC_SERVER_URL
   : "http://localhost:3000";
 
-const ProjectForm = ({ type, session }: ProjectFromProps) => {
+const ProjectForm = ({ type, session, project }: ProjectFromProps) => {
   const router = useRouter();
   const [createNewUser] = useMutation(CREATE_NEW_PROJECT);
+  const [updateProject] = useMutation(UPDATE_PROJECT);
   const uploadImage = async (imagePath: string) => {
     try {
       const response = await fetch(`${serverUrl}/api/upload`, {
@@ -32,19 +34,21 @@ const ProjectForm = ({ type, session }: ProjectFromProps) => {
       throw error;
     }
   };
-
+  const isBase64Url = (str: string) => {
+    const base64UrlRegex = /^data:[a-z]+\/[a-z]+;base64,([A-Za-z0-9-_+/=])+$/;
+    return base64UrlRegex.test(str);
+  };
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const image = await uploadImage(form.image);
-      const projectData = {
-        ...form,
-        image: image?.url,
-        createdBy: session?.user?.id,
-      };
-
       if (type === "create") {
+        const image = await uploadImage(form.image);
+        const projectData = {
+          ...form,
+          image: image?.url,
+          createdBy: session?.user?.id,
+        };
         createNewUser({
           variables: {
             projectData: projectData,
@@ -57,6 +61,26 @@ const ProjectForm = ({ type, session }: ProjectFromProps) => {
               "🚀 ~ file: ProjectForm.tsx:55 ~ handleFormSubmit ~ error:",
               error
             );
+          },
+        });
+        setIsSubmitting(false);
+        router.push("/");
+      }
+      if (type === "edit") {
+        let updatedForm = { ...form };
+        const isUploadingNewImage = isBase64Url(form.image);
+        if (isUploadingNewImage) {
+          const image = await uploadImage(form.image);
+
+          updatedForm = {
+            ...form,
+            image: image?.url,
+          };
+        }
+        updateProject({
+          variables: {
+            projectId: project?.id,
+            setProject: updatedForm,
           },
         });
         setIsSubmitting(false);
@@ -95,12 +119,12 @@ const ProjectForm = ({ type, session }: ProjectFromProps) => {
   };
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
-    title: "",
-    description: "",
-    liveSiteUrl: "",
-    githubUrl: "",
-    category: "",
-    image: "",
+    title: project?.title || "",
+    description: project?.description || "",
+    liveSiteUrl: project?.liveSiteUrl || "",
+    githubUrl: project?.githubUrl || "",
+    category: project?.category || "",
+    image: project?.image || "",
   });
   return (
     <form onSubmit={handleFormSubmit} className="flexStart form">

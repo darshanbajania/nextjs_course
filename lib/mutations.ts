@@ -23,3 +23,16 @@ export const DELETE_PROJECT = gql`
     }
   }
 `;
+export const UPDATE_PROJECT = gql`
+  mutation UPDATE_PROJECT(
+    $projectId: uuid!
+    $setProject: users_project_set_input
+  ) {
+    update_users_project_by_pk(
+      pk_columns: { id: $projectId }
+      _set: $setProject
+    ) {
+      id
+    }
+  }
+`;
