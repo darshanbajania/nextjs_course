@@ -43,6 +43,7 @@ export const GET_PROJECT_DATA = gql`
         id
         name
         profilePic
+        email
       }
     }
   }

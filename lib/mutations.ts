@@ -15,3 +15,11 @@ export const CREATE_NEW_PROJECT = gql`
     }
   }
 `;
+
+export const DELETE_PROJECT = gql`
+  mutation deleteProject($projectId: uuid!) {
+    delete_users_project_by_pk(id: $projectId) {
+      id
+    }
+  }
+`;

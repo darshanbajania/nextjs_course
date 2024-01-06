@@ -6,6 +6,7 @@ import Modal from "@/components/Modal";
 import Link from "next/link";
 import Image from "next/image";
 import RelatedProjects from "@/components/RelatedProjects";
+import ProjectActions from "@/components/ProjectActions";
 const Project = async ({ params: { id } }: { params: { id: string } }) => {
   const client = getClient();
   const session = await getCurrentUser();
@@ -53,11 +54,11 @@ const Project = async ({ params: { id } }: { params: { id: string } }) => {
           </div>
         </div>
 
-        {/* {session?.user?.email === projectDetails?.customer?.email && (
+        {session?.user?.email === projectDetails?.customer?.email && (
           <div className="flex justify-end items-center gap-2">
-              <ProjectActions projectId={projectDetails?.id} />
+            <ProjectActions projectId={projectDetails?.id} />
           </div>
-      )} */}
+        )}
       </section>
 
       <section className="mt-14">
